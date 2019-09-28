@@ -1,20 +1,16 @@
 version: 0.2
 
-env:
-  variables:
-    PROJECT_ROOT: "/root"
-
 phases:
   pre_build:
     commands:
       - echo "Before running tests"
-      - sudo ls ${PROJECT_ROOT}
-      - pip install -r ${PROJECT_ROOT}/requirements.txt
+      - sudo ls /root
+      - pip install -r requirements.txt
 
   build:
     commands:
       - echo "Running all unit tests"
-      - python ${PROJECT_ROOT}/manage.py test
+      - python manage.py test
   post_build:
     commands:
       - echo Build completed on `date`
