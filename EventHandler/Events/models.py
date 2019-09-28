@@ -15,6 +15,7 @@ class Event(models.Model) :
 
     name                = models.CharField(max_length=200)
     start_date_time     = models.DateTimeField()
+    end_date_time       = models.DateTimeField()
     max_participants    = models.PositiveIntegerField(blank=True) 
     min_participants    = models.PositiveIntegerField(blank=True) 
     descriptions        = models.TextField()
