@@ -29,14 +29,14 @@ class SimpleMiddleware:
 
         url = request.META.get('PATH_INFO')
         request_method = request.META.get('REQUEST_METHOD')
-
         if (url == '/events/' or url == '/categories/' and request_method == 'POST'):
-
             token = request.META.get('HTTP_AUTHORIZATION', None)
             print(token)
             if token is not None:
-                return None
-            response_data = {}
+                print()
+                #return None
+            #response_data = {}
             #return JsonResponse(response_data, status=204)
             #return HttpResponseForbidden()
-            return HttpResponse('401 Unauthorized', status=401)
+        #return HttpResponse('401 Unauthorized', status=401)
+        return None
