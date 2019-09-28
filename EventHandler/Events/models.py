@@ -10,7 +10,7 @@ class Category(models.Model) :
 
     def __str__(self) :
         return self.name
-"""
+
 class Event(models.Model) :
 
     name                = models.CharField(max_length=200)
@@ -20,7 +20,7 @@ class Event(models.Model) :
     descriptions        = models.TextField()
     status              = models.BooleanField()
     category            = models.ManyToManyField(Category)
-    organizer_name      = models.ForeignKey('')
+    organizer_name      = models.CharField(max_length=200)
 
 
     def __str__(self) :
@@ -29,10 +29,10 @@ class Event(models.Model) :
 
 class Register(models.Model) :
 
-    event_id            = models.ForeignKey('Event')
-    participant_id      = models.ForeignKey()
+    event_id            = models.ForeignKey('Event',on_delete = models.CASCADE)
+    participant_id      = models.IntegerField()
     attendance          = models.BooleanField()
     feedback            = models.TextField()
-"""
+
 
 
