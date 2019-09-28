@@ -78,8 +78,15 @@ WSGI_APPLICATION = 'EventHandler.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': '/etc/mysql/my.cnf',
+        },
+        'NAME': 'CitiHack',
+        'USER': 'admin',
+        'PASSWORD' : 'citihack191',
+        'HOST' :  'db-team1.cif14ai3iiw6.ap-southeast-1.rds.amazonaws.com',
+        'PORT' : '3306',
     }
 }
 
