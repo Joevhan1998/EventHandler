@@ -25,7 +25,7 @@ SECRET_KEY = '_mgf^$@sv(=z&tt6*$x35rweaqrocs#0)g5^nci=w_qas-jm^e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.8.103']
 
 
 # Application definition
@@ -42,7 +42,12 @@ INSTALLED_APPS = [
     'Events'
 ]
 
+SWAGGER_SETTINGS = {
+    'VALIDATOR_URL': 'http://192.168.8.103:8000'
+}
+
 MIDDLEWARE = [
+    'Events.middleware.SimpleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -50,6 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    
 ]
 
 ROOT_URLCONF = 'EventHandler.urls'

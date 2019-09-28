@@ -16,4 +16,4 @@ class RegisterSerializers(serializers.HyperlinkedModelSerializer) :
 class CategorySerializers(serializers.HyperlinkedModelSerializer) :
     class Meta :
         model       = Category
-        fields      = '__all__'
+        fields      = ('name', )
