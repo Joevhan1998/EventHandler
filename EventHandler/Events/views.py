@@ -1,19 +1,26 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from rest_framework import status
 
 from .serializers import *
 from .models import *
 
 class EventList(APIView):
-    def __init__(self):
-        self.admin = False
     def get(self, request, format=None):
-        if self.admin == True:
-            events = Event.objects.all()
-            serializer = EventSerializers(events, many=True)
-            return Response(serializer.data)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        request_data = request.GET.get("eventId", None)
+        
+        serializer = None
+        if request_data is not None:
+            try:
+                pk = int(request_data)
+                serializer = EventSerializers(Event.objects.filter(pk = pk), many = True)
+            except ValueError:
+                serializer = EventSerializers(Event.objects.none(), many = True)
+        else:
+                serializer = EventSerializers(Event.objects.none(), many = True)
+        
+        return Response(serializer.data)
+
 
     def post(self, request, format=None):
         if self.admin == True:
@@ -50,19 +57,19 @@ class EventDetail(APIView):
 
 class CategoryList(APIView):
     def get(self, request, format = None):
-        request_data = request.GET.get("categoryId", "all")
+        request_data = request.GET.get("categoryId", None)
         
         serializer = None
-        try:
-            request_num = int(request_data)
-            queryset = Category.objects.filter(pk = request_num)
-            serializer = CategorySerializers(queryset, many = True)
-        except ValueError:
-            queryset = Category.objects.all()
-            serializer = CategorySerializers(queryset, many = True)
-        finally:
-            return Response(serializer.data)
-
+        if request_data is not None:
+            try:
+                pk = int(request_data)
+                serializer = CategorySerializers(Category.objects.filter(pk = pk), many = True)
+            except ValueError:
+                serializer = CategorySerializers(Category.objects.none(), many = True)
+        else:
+                serializer = CategorySerializers(Category.objects.all(), many = True)
+        
+        return Response(serializer.data)
 
 class RegisterList(APIView):
     def get(sefl, request, format = None):
