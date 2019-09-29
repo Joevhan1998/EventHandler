@@ -3,25 +3,30 @@ from rest_framework import status
 from django.http import JsonResponse
 from django.http import HttpResponseForbidden
 from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Register
 import re
 
 import requests
 
-def check_token(request): #True if admin, False if volunteer
-    if request == None:
+authenticator_url = 'http://authenticator-team1.xmpknwihw4.ap-southeast-1.elasticbeanstalk.com/accounts/me'
+
+def check_token(token): #True if admin, False if volunteer
+    if token == None:
         return False
-    #TODO: pull jwt token
-    """ jwt ='kbkcmbkcmbkcbc9ic9vixc9vixc9v'
-    hed = {'Authorization': 'Bearer ' + jwt}
+
+    hed = {'Authorization': 'Bearer ' + token}
     data = {}
 
-    url = 'http://authenticator-team1.xmpknwihw4.ap-southeast-1.elasticbeanstalk.com/accounts/me'
+    url = athenticator_url
     response = requests.post(url, json=data, headers=hed)
-    json_response = response.json() """
+    json_response = response.json()
 
-    json_response = {
+    print(json_response)
+
+    #Example json response
+    """ json_response = {
         "authorities": [
             {
                 "authority": "admin"
@@ -70,24 +75,28 @@ def check_token(request): #True if admin, False if volunteer
         "clientOnly": False,
         "name": "5"
     }
-
-    result = json_response['authorities'][0]['authority']
+ """
+    try:
+        result = json_response['authorities'][0]['authority']
+    except:
+        return False
     
-    return result
+    return result == "admin"
 
-def check_owner(request, id):
-    if request == None:
+def check_owner(token, id):
+    if token == None:
         return False
 
-    """ jwt ='kbkcmbkcmbkcbc9ic9vixc9vixc9v'
-    hed = {'Authorization': 'Bearer ' + jwt}
+    hed = {'Authorization': 'Bearer ' + token}
     data = {}
 
-    url = 'http://authenticator-team1.xmpknwihw4.ap-southeast-1.elasticbeanstalk.com/accounts/me'
+    url = athenticator_url
     response = requests.post(url, json=data, headers=hed)
-    json_response = response.json() """
+    json_response = response.json()
 
-    json_response = {
+    print(json_response)
+
+    """ json_response = {
         "authorities": [
             {
                 "authority": "admin"
@@ -135,17 +144,18 @@ def check_owner(request, id):
         "credentials": "",
         "clientOnly": False,
         "name": "5"
-    }
+    } """
 
     result = json_response['principal']
 
     try:
         r = Register.objects.get(id=id)
+        
         return str(r.participant_id) == result
     except ObjectDoesNotExist:
         return False #Not found
 
-    return True
+    return False
 
 class SimpleMiddleware:
     def __init__(self, get_response):
@@ -180,12 +190,13 @@ class SimpleMiddleware:
         request_method = request.META.get('REQUEST_METHOD')
 
         term1 = (url.startswith('/events') or url.startswith('/categories')) and 'GET' not in request_method
-        term2 = (url.startswith('/registers/?eventId')) and 'GET' in request_method
-        term3 = (r'\/registers\/(?P<register_id>[0-9]+)') and 'GET' in request_method
+        term2 = url.startswith('/registers') and request.META.get('QUERY_STRING') and 'GET' in request_method
+
+        z = re.match('\/registers\/(?P<register_id>[0-9]+)', url)
+        term3 = z and 'GET' in request_method
 
         if (term1 or term2):
             token = request.META.get('HTTP_AUTHORIZATION', None)
-            #token = 'asdasdas'
             is_admin = check_token(token)
             if is_admin:
                 return None
@@ -193,7 +204,8 @@ class SimpleMiddleware:
 
         elif term3:
             token = request.META.get('HTTP_AUTHORIZATION', None)
-            is_owner = check_owner(token, register_id)
+
+            is_owner = check_owner(token, z.groups()[0])
             if is_owner:
                 return None
             return HttpResponse('401 Unauthorized', status=401)
