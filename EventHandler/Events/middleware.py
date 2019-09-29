@@ -16,7 +16,7 @@ def check_token(token): #True if admin, False if volunteer
     if token == None:
         return False
 
-    hed = {'Authorization': 'Bearer ' + token}
+    hed = {'Authorization': token}
     data = {}
 
     url = athenticator_url
@@ -87,7 +87,7 @@ def check_owner(token, id):
     if token == None:
         return False
 
-    hed = {'Authorization': 'Bearer ' + token}
+    hed = {'Authorization': token}
     data = {}
 
     url = athenticator_url
