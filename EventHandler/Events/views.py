@@ -22,8 +22,8 @@ class EventFilterBackend(BaseFilterBackend):
 			name='search',
 			location='query',
 			required=False,
-			type='string',
-		)]
+			type='string'
+		),]
 
 class RegisterFilterBackend(BaseFilterBackend):
 	def get_schema_fields(self, view):
@@ -31,8 +31,8 @@ class RegisterFilterBackend(BaseFilterBackend):
 			name='eventId',
 			location='query',
 			required=False,
-			type='string',
-		)]
+			type='string'
+		),]
 
 class EventsViewTime(viewsets.ModelViewSet) :
 	serializer_class = EventSerializers
