@@ -25,7 +25,7 @@ SECRET_KEY = '_mgf^$@sv(=z&tt6*$x35rweaqrocs#0)g5^nci=w_qas-jm^e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.8.103', '13.228.249.206']
+ALLOWED_HOSTS = ['192.168.8.103', 'Team1-EventHandler-Django.rxnbsfvt6h.us-west-2.elasticbeanstalk.com']
 
 
 # Application definition
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 ]
 
 SWAGGER_SETTINGS = {
-    'VALIDATOR_URL': ['http://192.168.8.103:8000', 'http://13.228.249.206:8000']
+    'VALIDATOR_URL': ['http://192.168.8.103:8000', 'Team1-EventHandler-Django.rxnbsfvt6h.us-west-2.elasticbeanstalk.com:8000']
 }
 
 MIDDLEWARE = [
