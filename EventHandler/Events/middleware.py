@@ -103,7 +103,7 @@ class SimpleMiddleware:
         url = request.META.get('PATH_INFO')
         request_method = request.META.get('REQUEST_METHOD')
 
-        if ((url == '/events/' or url == '/categories/') and request_method == 'GET'):
+        if ((url == '/events/' or url == '/categories/') and request_method == 'POST'):
             
             
             token = request.META.get('HTTP_AUTHORIZATION', None)
