@@ -12,17 +12,19 @@ class Category(models.Model) :
         return self.name
 
 class Event(models.Model) :
-
+    STATUS              = {
+        ('O',     'Open'),
+        ('C',     'Closed'),
+    }
     name                = models.CharField(max_length=200)
     start_date_time     = models.DateTimeField()
+    end_date_time       = models.DateTimeField()
     max_participants    = models.PositiveIntegerField(blank=True) 
     min_participants    = models.PositiveIntegerField(blank=True) 
     descriptions        = models.TextField()
-    status              = models.BooleanField()
+    status              = models.CharField(max_length=1,choices=STATUS,default = 'O')
     category            = models.ManyToManyField(Category)
     organizer_name      = models.CharField(max_length=200)
-
-
     def __str__(self) :
         return self.name
 
