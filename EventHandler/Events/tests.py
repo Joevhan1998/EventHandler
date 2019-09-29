@@ -52,3 +52,85 @@ class CategoryViewTest(APITestCase):
         for pair in Category.objects.all():
             assert (pair.pk != 4)
 """
+
+class EventViewTest(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.initialized = False
+        if (not self.initialized):
+            Event.objects.create(name = "event1", start_date_time = "2019-12-20T10:00:00+0100", end_date_time = "2019-12-21T10:00:00+0100", max_participants = 50, min_participants = 20, descriptions = "event1 description", status = "O", category = None, organizer_name = "Org1")
+            Event.objects.create(name = "event2", start_date_time = "2019-12-24T10:00:00+0100", end_date_time = "2019-12-25T10:00:00+0100", max_participants = 60, min_participants = 10, descriptions = "event2 description", status = "C", category = None, organizer_name = "Org2")
+            Event.objects.create(name = "event2", start_date_time = "2019-12-26T10:00:00+0100", end_date_time = "2019-12-27T10:00:00+0100", max_participants = 70, min_participants = 0, descriptions = "event3 description", status = "O", category = None, organizer_name = "Org3")
+            self.initialized = True
+    def test_GET_search_2(self):
+        response = self.client.get("/events/", data = {"search": "event2"})
+        response.json.loads(response.render().content)
+        self.assertEqual(len(response), 2)
+    
+    def test_GET_search_undefined(self):
+        response = self.client.get("/events/", data = {"search": "event22e1casc"})
+        assert(404 == response.status_code)
+
+    def test_GET_time(self):
+        response = self.client.get("/events/2019-12-19T10:00:00+0100/2019-12-22T10:00:00+0100/")
+        response.json.loads(response.render().content)
+
+        response = {"eventName": response.eventName}
+        expected = {"eventName": "event1"}
+
+        self.assertEqual(response, expected)
+
+    def test_GET_time_undefined(self):
+        response = self.client.get("/events/2018-12-19T10:00:00+0100/2018-12-22T10:00:00+0100/")
+        assert(404 == response.status_code)
+
+    def test_GET_category(self):
+        pass
+
+
+    def test_GET_3(self):
+        response = self.client.get("/events/", data = {"eventId": 3})
+        response = json.loads(response.render().content)
+        response = {"eventId": response.pk, "name": response.name}
+
+        expected = Category.objects.filter(pk = 3)
+        expected = {"eventId": expected.pk, "name": expected.name}
+        
+        self.assertEqual(response, expected)
+
+    def test_GET_undefined(self):
+        response = self.client.get("/events/", data = {"eventId": "23aca"})
+        self.assertEqual(404, response.status_code)
+
+    def test_POST_admin(self):
+        response = self.client.post("/events/", header = {"Authorization": "Bearer ..acasc"}, data = {"eventName": "event4", "startDateTime": "2019-12-23T10:00:00+0100", "endDateTime": "2019-12-23T10:00:00+0100", "maxParticipants": 50, "minParticipants": 20, "organizerName": "some org", "descriptions": "some description", "categoryId": 3, "eventStatus": "C"})
+        self.assertEqual(201, response.status_code)
+        expected = Event.objects.filter(name = "event4")
+        assert (0 != len(expected))
+    
+    def test_POST(self):
+        response = self.client.post("/events/", data = {"eventName": "event4", "startDateTime": "2019-12-23T10:00:00+0100", "endDateTime": "2019-12-23T10:00:00+0100", "maxParticipants": 50, "minParticipants": 20, "organizerName": "some org", "descriptions": "some description", "categoryId": 3, "eventStatus": "C"})
+        self.assertEqual(401, response.status_code)
+
+    def test_DELETE_admin(self):
+        response = self.client.delete("/events/", header = {"Authorization": "Bearer ..acasc"}, data = {"eventId": 1})
+        self.assertEqual(201, response.status_code)
+        expected = Event.objects.filter(pk = 1)
+        assert (0 == len(expected))
+    
+    def test_DELETE(self):
+        response = self.client.delete("/events/",  data = {"eventId": 1})
+        self.assertEqual(401, response.status_code)
+
+    def test_PUT_admin(self):
+        response = self.client.put("/events/", header = {"Authorization": "Bearer ..acasc"}, data = {"eventId": 1, "eventName": "event20", "startDateTime": "2019-12-20T10:00:00+0100", "endDateTime": "2019-12-20T10:00:00+0100", "maxParticipants": 30, "minParticipants": 0, "organizerName": "noname", "descriptions": "whatever description"})
+        response = {"eventName": response.EventName}
+        self.assertEqual(200, response.status_code)
+        expected = Event.objects.filter(pk = 1)
+        expected = {"eventName": expected.eventName}
+        self.assertEqual(expected, response)
+
+    def test_PUT(self):
+        response = self.client.put("/events/", data = {"eventId": 1, "eventName": "event20", "startDateTime": "2019-12-20T10:00:00+0100", "endDateTime": "2019-12-20T10:00:00+0100", "maxParticipants": 30, "minParticipants": 0, "organizerName": "noname", "descriptions": "whatever description"})
+        self.assertEqual(401, response.status_code)
+
