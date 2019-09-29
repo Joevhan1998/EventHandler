@@ -143,11 +143,42 @@ class EventViewTest(APITestCase):
         self.assertEqual(401, response.status_code)
 
 class RegisterViewTest(APITestCase):
-         def setUp(self):
+    def setUp(self):
         self.client = APIClient()
         self.initialized = False
         if (not self.initialized):
-            Event.objects.create(name = "event1", start_date_time = "2019-12-20T10:00:00+0100", end_date_time = "2019-12-21T10:00:00+0100", max_participants = 50, min_participants = 20, descriptions = "event1 description", status = "O", category = None, organizer_name = "Org1")
-            Event.objects.create(name = "event2", start_date_time = "2019-12-24T10:00:00+0100", end_date_time = "2019-12-25T10:00:00+0100", max_participants = 60, min_participants = 10, descriptions = "event2 description", status = "C", category = None, organizer_name = "Org2")
-            Event.objects.create(name = "event2", start_date_time = "2019-12-26T10:00:00+0100", end_date_time = "2019-12-27T10:00:00+0100", max_participants = 70, min_participants = 0, descriptions = "event3 description", status = "O", category = None, organizer_name = "Org3")
+
+            c1 = Category.objects.create(name = "category1")
+            c2 = Category.objects.create(name = "category2")
+            
+            e1 = Event.objects.create(name = "event1", start_date_time = "2019-12-20T10:00:00+0100", end_date_time = "2019-12-21T10:00:00+0100", max_participants = 50, min_participants = 20, descriptions = "event1 description", status = "O", category = c1, organizer_name = "Org1")
+            e2 = Event.objects.create(name = "event2", start_date_time = "2019-12-24T10:00:00+0100", end_date_time = "2019-12-25T10:00:00+0100", max_participants = 60, min_participants = 10, descriptions = "event2 description", status = "C", category = c2, organizer_name = "Org2")
+            e3 = Event.objects.create(name = "event2", start_date_time = "2019-12-26T10:00:00+0100", end_date_time = "2019-12-27T10:00:00+0100", max_participants = 70, min_participants = 0, descriptions = "event3 description", status = "O", category = c1, organizer_name = "Org3")
+
+            r1 = Register.objects.create(event_id = e1, participant_id = 3, attendance = True, feedback = "somefeedback")
+            r2 = Register.objects.create(event_id = e1, participant_id = 2, attendance = False, feedback = "")
+
+        def test_POST(self):
+            response = self.client.post("/events/volunteer/", data = {"eventId": 1, "userId": 5}})
+            expected = Register.objects.filter(eventId = 1, userId = 5)
+            self.assertEqual(1, expected)
+        
+        def test_DELETE(self):
+            response = self.client.delete("/events/volunteer/", data = {"eventId": 1, "userId": 5})
+            expected = Register.objects.filter(eventId = 1, userId = 5)
+            self.assertEqual(0, expected)
+
+        def test_GET_allfeedback(self):
+            response = self.client.get("/events/feedback/", data = {"eventId": 1})
+            expected = Register.objects.filter(eventId = 1)
+            print(expected)
+
+        def test_GET_feedback(self):
+            response = self.client.get("/events/feedback/", data = {"registerId": 1})
+            expected = Register.objects.filter(registerId = 1)
+            pront(expected)
+
+
+
+
             self.initialized = True
