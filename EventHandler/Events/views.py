@@ -47,11 +47,6 @@ class EventsView(viewsets.ModelViewSet) :
 	filter_backends = (EventFilterBackend,)
 	serializer_class = EventSerializers
 
-	def list(self, request, *args, **kwargs):
-		response = super(EventsView, self).list(request, *args, **kwargs)
-		response.data = {"events": response.data}
-		return response
-
 	def filter_queryset(self, queryset):
 		return queryset
 
@@ -71,19 +66,10 @@ class EventsView(viewsets.ModelViewSet) :
 class CategoryView(viewsets.ModelViewSet):
 	queryset = Category.objects.all()
 	serializer_class = CategorySerializers
-	def list(self, request, *args, **kwargs):
-		response = super(CategoryView, self).list(request, *args, **kwargs)
-		response.data = {"categories": response.data}
-		return response
 
 class RegisterView(viewsets.ModelViewSet):
 	filter_backends = (RegisterFilterBackend,)
 	serializer_class    = RegisterSerializers
-
-	def list(self, request, *args, **kwargs):
-		response = super(RegisterView, self).list(request, *args, **kwargs)
-		response.data = {"registers": response.data}
-		return response
 
 	def get_queryset(self):
 		queryset = Register.objects.all()
