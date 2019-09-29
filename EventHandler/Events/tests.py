@@ -8,23 +8,15 @@ from .models import *
 import json
 
 
-class BaseViewTest(APITestCase):
+class CategoryViewTest(APITestCase):
     def setUp(self):
-        #self.client = RequestsClient()
         self.client = APIClient()
-        self.database_initialized = False
-    def initialized(self):
-        temp = self.database_initialized
-        self.database_initlialized
-        return temp
-
-class CategoryViewTest(BaseViewTest):
-    def setUp(self):
-        super().setUp()
+        self.initialized = False
         if (not self.initialized):
             Category.objects.create(name = "one")
             Category.objects.create(name = "two")
             Category.objects.create(name = "three")
+            self.initialized = True
 
     def test_GET_all(self):
         response = self.client.get("/database/categories")
