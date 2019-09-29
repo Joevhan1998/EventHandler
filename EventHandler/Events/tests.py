@@ -58,9 +58,11 @@ class EventViewTest(APITestCase):
         self.client = APIClient()
         self.initialized = False
         if (not self.initialized):
-            Event.objects.create(name = "event1", start_date_time = "2019-12-20T10:00:00+0100", end_date_time = "2019-12-21T10:00:00+0100", max_participants = 50, min_participants = 20, descriptions = "event1 description", status = "O", category = None, organizer_name = "Org1")
-            Event.objects.create(name = "event2", start_date_time = "2019-12-24T10:00:00+0100", end_date_time = "2019-12-25T10:00:00+0100", max_participants = 60, min_participants = 10, descriptions = "event2 description", status = "C", category = None, organizer_name = "Org2")
-            Event.objects.create(name = "event2", start_date_time = "2019-12-26T10:00:00+0100", end_date_time = "2019-12-27T10:00:00+0100", max_participants = 70, min_participants = 0, descriptions = "event3 description", status = "O", category = None, organizer_name = "Org3")
+            category1 = Category.objects.create(name = "category1")
+            category2 = Category.objects.create(name = "category2")
+            Event.objects.create(name = "event1", start_date_time = "2019-12-20T10:00:00+0100", end_date_time = "2019-12-21T10:00:00+0100", max_participants = 50, min_participants = 20, descriptions = "event1 description", status = "O", category = category1, organizer_name = "Org1")
+            Event.objects.create(name = "event2", start_date_time = "2019-12-24T10:00:00+0100", end_date_time = "2019-12-25T10:00:00+0100", max_participants = 60, min_participants = 10, descriptions = "event2 description", status = "C", category = category1, organizer_name = "Org2")
+            Event.objects.create(name = "event2", start_date_time = "2019-12-26T10:00:00+0100", end_date_time = "2019-12-27T10:00:00+0100", max_participants = 70, min_participants = 0, descriptions = "event3 description", status = "O", category = category2, organizer_name = "Org3")
             self.initialized = True
     def test_GET_search_2(self):
         response = self.client.get("/events/", data = {"search": "event2"})
@@ -73,7 +75,7 @@ class EventViewTest(APITestCase):
 
     def test_GET_time(self):
         response = self.client.get("/events/2019-12-19T10:00:00+0100/2019-12-22T10:00:00+0100/")
-        response.json.loads(response.render().content)
+        response = json.loads(response.render().content)
 
         response = {"eventName": response.eventName}
         expected = {"eventName": "event1"}
@@ -85,7 +87,13 @@ class EventViewTest(APITestCase):
         assert(404 == response.status_code)
 
     def test_GET_category(self):
-        pass
+        response = self.client.get("/events/", data = {"categoryId": 2})
+        response = json.loads(response.render().content)
+        
+        response = {"eventName": response.eventName}
+        expected = {"eventName": "event3"}
+
+        self.assertEqual(response, expected)
 
 
     def test_GET_3(self):
@@ -134,3 +142,12 @@ class EventViewTest(APITestCase):
         response = self.client.put("/events/", data = {"eventId": 1, "eventName": "event20", "startDateTime": "2019-12-20T10:00:00+0100", "endDateTime": "2019-12-20T10:00:00+0100", "maxParticipants": 30, "minParticipants": 0, "organizerName": "noname", "descriptions": "whatever description"})
         self.assertEqual(401, response.status_code)
 
+class RegisterViewTest(APITestCase):
+         def setUp(self):
+        self.client = APIClient()
+        self.initialized = False
+        if (not self.initialized):
+            Event.objects.create(name = "event1", start_date_time = "2019-12-20T10:00:00+0100", end_date_time = "2019-12-21T10:00:00+0100", max_participants = 50, min_participants = 20, descriptions = "event1 description", status = "O", category = None, organizer_name = "Org1")
+            Event.objects.create(name = "event2", start_date_time = "2019-12-24T10:00:00+0100", end_date_time = "2019-12-25T10:00:00+0100", max_participants = 60, min_participants = 10, descriptions = "event2 description", status = "C", category = None, organizer_name = "Org2")
+            Event.objects.create(name = "event2", start_date_time = "2019-12-26T10:00:00+0100", end_date_time = "2019-12-27T10:00:00+0100", max_participants = 70, min_participants = 0, descriptions = "event3 description", status = "O", category = None, organizer_name = "Org3")
+            self.initialized = True
