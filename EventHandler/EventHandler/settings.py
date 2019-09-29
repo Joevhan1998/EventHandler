@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '_mgf^$@sv(=z&tt6*$x35rweaqrocs#0)g5^nci=w_qas-jm^e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['192.168.8.103', 'Team1-EventHandler-Django.rxnbsfvt6h.us-west-2.elasticbeanstalk.com']
 
