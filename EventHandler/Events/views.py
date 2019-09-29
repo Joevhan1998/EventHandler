@@ -68,7 +68,6 @@ class CategoryList(APIView):
                 serializer = CategorySerializers(Category.objects.none(), many = True)
         else:
                 serializer = CategorySerializers(Category.objects.all(), many = True)
-        
         return Response(serializer.data)
 
 class RegisterList(APIView):
