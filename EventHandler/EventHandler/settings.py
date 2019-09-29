@@ -25,7 +25,7 @@ SECRET_KEY = '_mgf^$@sv(=z&tt6*$x35rweaqrocs#0)g5^nci=w_qas-jm^e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.8.103', 'http://eventhandler-team1-django.cwcqeczfgp.ap-southeast-1.elasticbeanstalk.com/', '13.228.249.206']
+ALLOWED_HOSTS = ['192.168.8.103', '13.228.249.206']
 
 
 # Application definition
