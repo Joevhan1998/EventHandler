@@ -56,7 +56,10 @@ class EventsView(viewsets.ModelViewSet) :
 		categoryId = self.request.query_params.get('categoryId', None)
 		event_name = self.request.query_params.get('search', None)
 		if eventId is not None:
-			queryset = queryset.filter(pk=eventId)
+			try:
+				queryset = queryset.filter(pk=eventId)
+			except ValueError:
+				return None
 		if categoryId is not None:
 			queryset = queryset.filter(category__id=categoryId)
 		if event_name is not None:

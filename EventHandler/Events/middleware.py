@@ -19,8 +19,8 @@ def check_token(token): #True if admin, False if volunteer
     hed = {'Authorization': token}
     data = {}
 
-    url = athenticator_url
-    response = requests.post(url, json=data, headers=hed)
+    url = authenticator_url
+    response = requests.get(url, json=data, headers=hed)
     json_response = response.json()
 
     print(json_response)
@@ -209,3 +209,4 @@ class SimpleMiddleware:
             if is_owner:
                 return None
             return HttpResponse('401 Unauthorized', status=401)
+

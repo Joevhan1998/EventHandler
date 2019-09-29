@@ -159,7 +159,7 @@ class RegisterViewTest(APITestCase):
             r2 = Register.objects.create(event_id = e1, participant_id = 2, attendance = False, feedback = "")
 
         def test_POST(self):
-            response = self.client.post("/events/volunteer/", data = {"eventId": 1, "userId": 5}})
+            response = self.client.post("/events/volunteer/", data = {"eventId": 1, "userId": 5})
             expected = Register.objects.filter(eventId = 1, userId = 5)
             self.assertEqual(1, expected)
         
