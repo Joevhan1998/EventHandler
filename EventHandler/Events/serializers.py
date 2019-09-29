@@ -13,7 +13,7 @@ class CategorySerializers(serializers.ModelSerializer) :
         fields      = ('name', )
 
 class EventSerializers(serializers.ModelSerializer) :
-    category = CategorySerializers(many=True)
+    #category = CategorySerializers(many=True)
     class Meta :
         model       = Event
         fields      = '__all__'
