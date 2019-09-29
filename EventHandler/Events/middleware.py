@@ -19,7 +19,7 @@ def check_token(token): #True if admin, False if volunteer
     hed = {'Authorization': 'Bearer ' + token}
     data = {}
 
-    url = athenticator_url
+    url = authenticator_url
     response = requests.post(url, json=data, headers=hed)
     json_response = response.json()
 
